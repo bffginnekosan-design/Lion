@@ -15,9 +15,10 @@
     input { width: 100%; padding: 12px; box-sizing: border-box; font-size: 18px; border: 1px solid #ccc; border-radius: 6px; }
     button { width: 100%; padding: 14px; background-color: #007bff; color: white; border: none; border-radius: 6px; font-size: 20px; font-weight: bold; cursor: pointer; margin-top: 15px; }
     button:hover { background-color: #0056b3; }
-    #result { margin-top: 20px; padding: 15px; font-size: 1.1em; font-weight: bold; border-radius: 6px; line-height: 1.6; }
+    #result { margin-top: 20px; padding: 15px; font-size: 1em; font-weight: bold; border-radius: 6px; line-height: 1.6; }
     .pass { background-color: #d4edda; color: #155724; }
     .fail { background-color: #f8d7da; color: #721c24; }
+    .advice { margin-top: 10px; font-weight: normal; font-size: 0.9em; background: rgba(255,255,255,0.6); padding: 8px; border-radius: 4px; }
   </style>
 </head>
 <body>
@@ -96,13 +97,57 @@
       const resultDiv = document.getElementById('result');
 
       if (totalScore >= targetScore) {
+        const overScore = totalScore - targetScore;
+        const overPt = overScore * 5; // 100pt=20点 (1点=5pt 換算)
+
+        let msg = `合計: ${totalScore.toLocaleString()} 点<br>625,000点に到達しています！`;
+
+        if (overScore > 0) {
+          msg += `<br>（目標を ${overScore.toLocaleString()} 点 [約 ${overPt.toLocaleString()} pt] 超過）`;
+
+          // 削れる数の計算（内政・軍事を合わせた個数）
+          const total500 = n500 + g500;
+          const total2000 = n2000 + g2000;
+          const total10000 = n10000 + g10000;
+
+          let remScore = overScore;
+          let reduce500 = 0;
+          let reduce2000 = 0;
+          let reduce10000 = 0;
+
+          // 大きいpt（10000pt = 2000点）から優先的に削る
+          if (total10000 > 0 && remScore >= 2000) {
+            reduce10000 = Math.min(total10000, Math.floor(remScore / 2000));
+            remScore -= reduce10000 * 2000;
+          }
+          // 次に2000pt（400点）を削る
+          if (total2000 > 0 && remScore >= 400) {
+            reduce2000 = Math.min(total2000, Math.floor(remScore / 400));
+            remScore -= reduce2000 * 400;
+          }
+          // 最後に500pt（100点）を削る
+          if (total500 > 0 && remScore >= 100) {
+            reduce500 = Math.min(total500, Math.floor(remScore / 100));
+            remScore -= reduce500 * 100;
+          }
+
+          if (reduce500 > 0 || reduce2000 > 0 || reduce10000 > 0) {
+            msg += `<div class="advice">削り方の目安（合計から減らす個数）:<br>`;
+            if (reduce10000 > 0) msg += `・10000pt ✕ ${reduce10000} 個<br>`;
+            if (reduce2000 > 0) msg += `・2000pt ✕ ${reduce2000} 個<br>`;
+            if (reduce500 > 0) msg += `・500pt ✕ ${reduce500} 個<br>`;
+            msg += `減らすと無駄なく達成できます！</div>`;
+          }
+        }
+
         resultDiv.className = 'pass';
-        resultDiv.innerHTML = `合計: ${totalScore.toLocaleString()} 点<br>🎉 625,000点に到達しています！`;
+        resultDiv.innerHTML = msg;
+
       } else {
         const diffScore = targetScore - totalScore;
         const diffPt = diffScore * 5; // 100pt=20点 (1点=5pt 換算)
         resultDiv.className = 'fail';
-        resultDiv.innerHTML = `合計: ${totalScore.toLocaleString()} 点<br>❌ 到達していません（あと ${diffPt.toLocaleString()} pt必要）`;
+        resultDiv.innerHTML = `合計: ${totalScore.toLocaleString()} 点<br>到達していません（あと ${diffPt.toLocaleString()} pt必要）`;
       }
     }
   </script>
