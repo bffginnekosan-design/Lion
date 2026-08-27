@@ -24,7 +24,7 @@
 
   <h2>獅子奮迅 ミュータント</h2>
 
-  <!-- 内政ブロック（緑色） -->
+  <!-- 内政 -->
   <div class="section-title title-naisei">【内政】</div>
   <div class="input-group">
     <label for="naisei_500">500pt</label>
@@ -39,7 +39,7 @@
     <input type="number" id="naisei_10000" placeholder="0" min="0">
   </div>
 
-  <!-- 軍事ブロック（赤色） -->
+  <!-- 軍事 -->
   <div class="section-title title-gunji">【軍事】</div>
   <div class="input-group">
     <label for="gunji_500">500pt</label>
@@ -50,7 +50,7 @@
     <input type="number" id="gunji_2000" placeholder="0" min="0">
   </div>
   <div class="input-group">
-    <label for="gunji_10000">20000pt</label>
+    <label for="gunji_10000">10000pt</label>
     <input type="number" id="gunji_10000" placeholder="0" min="0">
   </div>
 
@@ -100,7 +100,7 @@
         resultDiv.innerHTML = `合計: ${totalScore.toLocaleString()} 点<br>🎉 625,000点に到達しています！`;
       } else {
         const diffScore = targetScore - totalScore;
-        const diffPt = diffScore * 20; // 1点 = 20pt 換算
+        const diffPt = diffScore * 5; // 100pt=20点 (1点=5pt 換算)
         resultDiv.className = 'fail';
         resultDiv.innerHTML = `合計: ${totalScore.toLocaleString()} 点<br>❌ 到達していません（あと ${diffPt.toLocaleString()} pt必要）`;
       }
