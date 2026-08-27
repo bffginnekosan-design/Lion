@@ -19,6 +19,7 @@
     .pass { background-color: #d4edda; color: #155724; }
     .fail { background-color: #f8d7da; color: #721c24; }
     .advice { margin-top: 10px; font-weight: normal; font-size: 0.9em; background: rgba(255,255,255,0.6); padding: 8px; border-radius: 4px; }
+    .sub-title { font-weight: bold; margin-top: 6px; }
   </style>
 </head>
 <body>
@@ -95,44 +96,66 @@
       const resultDiv = document.getElementById('result');
 
       if (totalScore >= targetScore) {
-        const overScore = totalScore - targetScore;
-
         let msg = `合計: ${totalScore.toLocaleString()} 点<br>625,000点に到達しています！`;
 
-        if (overScore > 0) {
-          // 削れる数の計算（内政・軍事を合わせた個数）
-          const total500 = n500 + g500;
-          const total2000 = n2000 + g2000;
-          const total10000 = n10000 + g10000;
+        // 目標達成に必要なスコアを「内政優先」で計算
+        let needScore = targetScore;
 
-          let remScore = overScore;
-          let reduce500 = 0;
-          let reduce2000 = 0;
-          let reduce10000 = 0;
+        let useN10000 = 0, useN2000 = 0, useN500 = 0;
+        let useG10000 = 0, useG2000 = 0, useG500 = 0;
 
-          // 大きいpt（10000pt = 2000点）から優先的に削る
-          if (total10000 > 0 && remScore >= 2000) {
-            reduce10000 = Math.min(total10000, Math.floor(remScore / 2000));
-            remScore -= reduce10000 * 2000;
-          }
-          // 次に2000pt（400点）を削る
-          if (total2000 > 0 && remScore >= 400) {
-            reduce2000 = Math.min(total2000, Math.floor(remScore / 400));
-            remScore -= reduce2000 * 400;
-          }
-          // 最後に500pt（100点）を削る
-          if (total500 > 0 && remScore >= 100) {
-            reduce500 = Math.min(total500, Math.floor(remScore / 100));
-            remScore -= reduce500 * 100;
+        // 1. 内政 10000pt (2000点)
+        if (needScore > 0 && n10000 > 0) {
+          useN10000 = Math.min(n10000, Math.ceil(needScore / 2000));
+          needScore -= useN10000 * 2000;
+        }
+        // 2. 軍事 10000pt (2000点)
+        if (needScore > 0 && g10000 > 0) {
+          useG10000 = Math.min(g10000, Math.ceil(needScore / 2000));
+          needScore -= useG10000 * 2000;
+        }
+        // 3. 内政 2000pt (400点)
+        if (needScore > 0 && n2000 > 0) {
+          useN2000 = Math.min(n2000, Math.ceil(needScore / 400));
+          needScore -= useN2000 * 400;
+        }
+        // 4. 軍事 2000pt (400点)
+        if (needScore > 0 && g2000 > 0) {
+          useG2000 = Math.min(g2000, Math.ceil(needScore / 400));
+          needScore -= useG2000 * 400;
+        }
+        // 5. 内政 500pt (100点)
+        if (needScore > 0 && n500 > 0) {
+          useN500 = Math.min(n500, Math.ceil(needScore / 100));
+          needScore -= useN500 * 100;
+        }
+        // 6. 軍事 500pt (100点)
+        if (needScore > 0 && g500 > 0) {
+          useG500 = Math.min(g500, Math.ceil(needScore / 100));
+          needScore -= useG500 * 100;
+        }
+
+        const hasNaisei = (useN10000 > 0 || useN2000 > 0 || useN500 > 0);
+        const hasGunji = (useG10000 > 0 || useG2000 > 0 || useG500 > 0);
+
+        if (totalScore > targetScore) {
+          msg += `<div class="advice">`;
+
+          if (hasNaisei) {
+            msg += `<div class="sub-title">【内政】</div>`;
+            if (useN10000 > 0) msg += `・10000pt ✕ ${useN10000} 個<br>`;
+            if (useN2000 > 0) msg += `・2000pt ✕ ${useN2000} 個<br>`;
+            if (useN500 > 0) msg += `・500pt ✕ ${useN500} 個<br>`;
           }
 
-          if (reduce500 > 0 || reduce2000 > 0 || reduce10000 > 0) {
-            msg += `<div class="advice">`;
-            if (reduce10000 > 0) msg += `・10000pt ✕ ${reduce10000} 個<br>`;
-            if (reduce2000 > 0) msg += `・2000pt ✕ ${reduce2000} 個<br>`;
-            if (reduce500 > 0) msg += `・500pt ✕ ${reduce500} 個<br>`;
-            msg += `省エネ達成派はこんな感じで減らすとちょーどいい感じ！<br>ランキングを目指すなら全ツッパだ！</div>`;
+          if (hasGunji) {
+            msg += `<div class="sub-title">【軍事】</div>`;
+            if (useG10000 > 0) msg += `・10000pt ✕ ${useG10000} 個<br>`;
+            if (useG2000 > 0) msg += `・2000pt ✕ ${useG2000} 個<br>`;
+            if (useG500 > 0) msg += `・500pt ✕ ${useG500} 個<br>`;
           }
+
+          msg += `<br>省エネ達成派はこんな感じにするとちょーどいい感じ！<br>ランキングを目指すなら全ツッパだ！</div>`;
         }
 
         resultDiv.className = 'pass';
