@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>獅子奮迅 ミュータント</title>
+  <style>
+    body { font-family: sans-serif; max-width: 450px; margin: 20px auto; padding: 10px; }
+    .section-title { font-weight: bold; font-size: 1.1em; margin-top: 15px; margin-bottom: 8px; padding-bottom: 4px; }
+    /* 内政（緑色） */
+    .title-naisei { color: #28a745; border-bottom: 2px solid #28a745; }
+    /* 軍事（赤色） */
+    .title-gunji { color: #dc3545; border-bottom: 2px solid #dc3545; }
+    
+    .input-group { margin-bottom: 12px; }
+    label { display: block; font-size: 0.9em; margin-bottom: 4px; color: #333; }
+    input { width: 100%; padding: 8px; box-sizing: border-box; font-size: 16px; }
+    button { width: 100%; padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 4px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+    button:hover { background-color: #0056b3; }
+    #result { margin-top: 16px; padding: 12px; font-weight: bold; border-radius: 4px; line-height: 1.5; }
+    .pass { background-color: #d4edda; color: #155724; }
+    .fail { background-color: #f8d7da; color: #721c24; }
+  </style>
+</head>
+<body>
+
+  <h2>獅子奮迅 ミュータント</h2>
+
+  <div class="section-title title-naisei">【内政】</div>
+  <div class="input-group">
+    <label for="naisei_500">内政 500pt（1個 100点）</label>
+    <input type="number" id="naisei_500" placeholder="0" min="0">
+  </div>
+  <div class="input-group">
+    <label for="naisei_2000">内政 2000pt（1個 400点）</label>
+    <input type="number" id="naisei_2000" placeholder="0" min="0">
+  </div>
+  <div class="input-group">
+    <label for="naisei_10000">内政 10000pt（1個 2000点）</label>
+    <input type="number" id="naisei_10000" placeholder="0" min="0">
+  </div>
+
+  <div class="section-title title-gunji">【軍事】</div>
+  <div class="input-group">
+    <label for="gunji_500">軍事 500pt（1個 100点）</label>
+    <input type="number" id="gunji_500" placeholder="0" min="0">
+  </div>
+  <div class="input-group">
+    <label for="gunji_2000">軍事 2000pt（1個 400点）</label>
+    <input type="number" id="gunji_2000" placeholder="0" min="0">
+  </div>
+  <div class="input-group">
+    <label for="gunji_10000">軍事 10000pt（1個 2000点）</label>
+    <input type="number" id="gunji_10000" placeholder="0" min="0">
+  </div>
+
+  <button onclick="calculate()">判定する</button>
+
+  <div id="result"></div>
+
+  <script>
+    function calculate() {
+      // 入力値を数値に変換（空欄は 0 ）
+      const getValue = (id) => {
+        const val = document.getElementById(id).value;
+        const num = Number(val);
+        return isNaN(num) ? 0 : num;
+      };
+
+      // 各入力欄の個数を取得
+      const n500 = getValue('naisei_500');
+      const n2000 = getValue('naisei_2000');
+      const n10000 = getValue('naisei_10000');
+
+      const g500 = getValue('gunji_500');
+      const g2000 = getValue('gunji_2000');
+      const g10000 = getValue('gunji_10000');
+
+      // 合計点数計算
+      const totalScore = ((n500 + g500) * 100) + 
+                         ((n2000 + g2000) * 400) + 
+                         ((n10000 + g10000) * 2000);
+      
+      const targetScore = 625000;
+      const resultDiv = document.getElementById('result');
+
+      if (totalScore >= targetScore) {
+        resultDiv.className = 'pass';
+        resultDiv.innerHTML = `合計: ${totalScore.toLocaleString()} 点<br>🎉 625,000点に到達しています！`;
+      } else {
+        const diff = targetScore - totalScore;
+        resultDiv.className = 'fail';
+        resultDiv.innerHTML = `合計: ${totalScore.toLocaleString()} 点<br>❌ 到達していません（あと ${diff.toLocaleString()} 点必要）`;
+      }
+    }
+  </script>
+
+</body>
+</html>
