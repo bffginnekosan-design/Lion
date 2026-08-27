@@ -98,13 +98,10 @@
 
       if (totalScore >= targetScore) {
         const overScore = totalScore - targetScore;
-        const overPt = overScore * 5; // 100pt=20点 (1点=5pt 換算)
 
         let msg = `合計: ${totalScore.toLocaleString()} 点<br>625,000点に到達しています！`;
 
         if (overScore > 0) {
-          msg += `<br>（目標を ${overScore.toLocaleString()} 点 [約 ${overPt.toLocaleString()} pt] 超過）`;
-
           // 削れる数の計算（内政・軍事を合わせた個数）
           const total500 = n500 + g500;
           const total2000 = n2000 + g2000;
