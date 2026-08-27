@@ -2,18 +2,20 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>獅子奮迅 ミュータント</title>
   <style>
-    body { font-family: sans-serif; max-width: 450px; margin: 20px auto; padding: 10px; display: none; }
-    .section-title { font-weight: bold; font-size: 1.1em; margin-top: 15px; margin-bottom: 8px; padding-bottom: 4px; }
-    .title-naisei { color: #28a745; border-bottom: 2px solid #28a745; }
-    .title-gunji { color: #dc3545; border-bottom: 2px solid #dc3545; }
-    .input-group { margin-bottom: 12px; }
-    label { display: block; font-size: 0.9em; margin-bottom: 4px; color: #333; }
-    input { width: 100%; padding: 8px; box-sizing: border-box; font-size: 16px; }
-    button { width: 100%; padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 4px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+    body { font-family: sans-serif; max-width: 450px; margin: 20px auto; padding: 15px; display: none; font-size: 18px; }
+    h2 { font-size: 1.4em; }
+    .section-title { font-weight: bold; font-size: 1.25em; margin-top: 20px; margin-bottom: 12px; padding-bottom: 6px; }
+    .title-naisei { color: #28a745; border-bottom: 3px solid #28a745; }
+    .title-gunji { color: #dc3545; border-bottom: 3px solid #dc3545; }
+    .input-group { margin-bottom: 16px; }
+    label { display: block; font-size: 1em; font-weight: bold; margin-bottom: 6px; color: #333; }
+    input { width: 100%; padding: 12px; box-sizing: border-box; font-size: 18px; border: 1px solid #ccc; border-radius: 6px; }
+    button { width: 100%; padding: 14px; background-color: #007bff; color: white; border: none; border-radius: 6px; font-size: 20px; font-weight: bold; cursor: pointer; margin-top: 15px; }
     button:hover { background-color: #0056b3; }
-    #result { margin-top: 16px; padding: 12px; font-weight: bold; border-radius: 4px; line-height: 1.5; }
+    #result { margin-top: 20px; padding: 15px; font-size: 1.1em; font-weight: bold; border-radius: 6px; line-height: 1.6; }
     .pass { background-color: #d4edda; color: #155724; }
     .fail { background-color: #f8d7da; color: #721c24; }
   </style>
@@ -22,6 +24,7 @@
 
   <h2>獅子奮迅 ミュータント</h2>
 
+  <!-- 内政ブロック（緑色） -->
   <div class="section-title title-naisei">【内政】</div>
   <div class="input-group">
     <label for="naisei_500">内政 500pt（1個 100点）</label>
@@ -36,6 +39,7 @@
     <input type="number" id="naisei_10000" placeholder="0" min="0">
   </div>
 
+  <!-- 軍事ブロック（赤色） -->
   <div class="section-title title-gunji">【軍事】</div>
   <div class="input-group">
     <label for="gunji_500">軍事 500pt（1個 100点）</label>
@@ -56,7 +60,7 @@
 
   <script>
     // パスワード設定（「1234」をお好きな合言葉に変更してください）
-    const PASSWORD = "44";
+    const PASSWORD = "1234";
 
     window.onload = function() {
       const userInput = prompt("パスワードを入力してください:");
