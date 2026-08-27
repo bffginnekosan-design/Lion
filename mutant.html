@@ -59,7 +59,7 @@
   <div id="result"></div>
 
   <script>
-    // パスワード設定
+    // パスワード設定（「44」に変更済み）
     const PASSWORD = "44";
 
     window.onload = function() {
@@ -101,7 +101,7 @@
       } else {
         const diff = targetScore - totalScore;
         resultDiv.className = 'fail';
-        resultDiv.innerHTML = `合計: ${totalScore.toLocaleString()} 点<br>❌ 到達していません（あと ${diff.toLocaleString()} 点必要）`;
+        resultDiv.innerHTML = `合計: ${totalScore.toLocaleString()} 点<br>❌ 到達していません（あと ${diff.toLocaleString()} pt必要）`;
       }
     }
   </script>
