@@ -19,13 +19,16 @@
     .pass { background-color: #d4edda; color: #155724; }
     .fail { background-color: #f8d7da; color: #721c24; }
     .advice { margin-top: 10px; font-weight: normal; font-size: 0.9em; background: rgba(255,255,255,0.6); padding: 8px; border-radius: 4px; }
-    .sub-title { font-weight: bold; margin-top: 6px; }
+    .pattern-box { background: rgba(255,255,255,0.8); border: 1px solid #BCE8C1; border-radius: 6px; padding: 10px; margin-top: 10px; }
+    .pattern-title { font-weight: bold; color: #155724; border-bottom: 1px dashed #28a745; padding-bottom: 4px; margin-bottom: 6px; }
+    .sub-title { font-weight: bold; margin-top: 6px; font-size: 0.95em; }
   </style>
 </head>
 <body>
 
   <h2>獅子奮迅 ミュータント</h2>
 
+  <!-- 内政 -->
   <div class="section-title title-naisei">内政</div>
   <div class="input-group">
     <label for="naisei_500">500pt</label>
@@ -40,6 +43,7 @@
     <input type="number" id="naisei_10000" placeholder="0" min="0">
   </div>
 
+  <!-- 軍事 -->
   <div class="section-title title-gunji">軍事</div>
   <div class="input-group">
     <label for="gunji_500">500pt</label>
@@ -98,63 +102,74 @@
       if (totalScore >= targetScore) {
         let msg = `合計: ${totalScore.toLocaleString()} 点<br>625,000点に到達しています！`;
 
-        // 目標達成に必要なスコアを「内政優先」で計算
-        let needScore = targetScore;
-
-        let useN10000 = 0, useN2000 = 0, useN500 = 0;
-        let useG10000 = 0, useG2000 = 0, useG500 = 0;
-
-        // 1. 内政 10000pt (2000点)
-        if (needScore > 0 && n10000 > 0) {
-          useN10000 = Math.min(n10000, Math.ceil(needScore / 2000));
-          needScore -= useN10000 * 2000;
-        }
-        // 2. 軍事 10000pt (2000点)
-        if (needScore > 0 && g10000 > 0) {
-          useG10000 = Math.min(g10000, Math.ceil(needScore / 2000));
-          needScore -= useG10000 * 2000;
-        }
-        // 3. 内政 2000pt (400点)
-        if (needScore > 0 && n2000 > 0) {
-          useN2000 = Math.min(n2000, Math.ceil(needScore / 400));
-          needScore -= useN2000 * 400;
-        }
-        // 4. 軍事 2000pt (400点)
-        if (needScore > 0 && g2000 > 0) {
-          useG2000 = Math.min(g2000, Math.ceil(needScore / 400));
-          needScore -= useG2000 * 400;
-        }
-        // 5. 内政 500pt (100点)
-        if (needScore > 0 && n500 > 0) {
-          useN500 = Math.min(n500, Math.ceil(needScore / 100));
-          needScore -= useN500 * 100;
-        }
-        // 6. 軍事 500pt (100点)
-        if (needScore > 0 && g500 > 0) {
-          useG500 = Math.min(g500, Math.ceil(needScore / 100));
-          needScore -= useG500 * 100;
-        }
-
-        const hasNaisei = (useN10000 > 0 || useN2000 > 0 || useN500 > 0);
-        const hasGunji = (useG10000 > 0 || useG2000 > 0 || useG500 > 0);
-
         if (totalScore > targetScore) {
+          // --- 計算関数 (優先順位を受け取って必要数を返す) ---
+          const calcPlan = (isNaiseiFirst) => {
+            let needScore = targetScore;
+            let res = { n10000: 0, n2000: 0, n500: 0, g10000: 0, g2000: 0, g500: 0 };
+
+            // 10000pt (2000点)
+            if (isNaiseiFirst) {
+              if (needScore > 0 && n10000 > 0) { res.n10000 = Math.min(n10000, Math.ceil(needScore / 2000)); needScore -= res.n10000 * 2000; }
+              if (needScore > 0 && g10000 > 0) { res.g10000 = Math.min(g10000, Math.ceil(needScore / 2000)); needScore -= res.g10000 * 2000; }
+            } else {
+              if (needScore > 0 && g10000 > 0) { res.g10000 = Math.min(g10000, Math.ceil(needScore / 2000)); needScore -= res.g10000 * 2000; }
+              if (needScore > 0 && n10000 > 0) { res.n10000 = Math.min(n10000, Math.ceil(needScore / 2000)); needScore -= res.n10000 * 2000; }
+            }
+
+            // 2000pt (400点)
+            if (isNaiseiFirst) {
+              if (needScore > 0 && n2000 > 0) { res.n2000 = Math.min(n2000, Math.ceil(needScore / 400)); needScore -= res.n2000 * 400; }
+              if (needScore > 0 && g2000 > 0) { res.g2000 = Math.min(g2000, Math.ceil(needScore / 400)); needScore -= res.g2000 * 400; }
+            } else {
+              if (needScore > 0 && g2000 > 0) { res.g2000 = Math.min(g2000, Math.ceil(needScore / 400)); needScore -= res.g2000 * 400; }
+              if (needScore > 0 && n2000 > 0) { res.n2000 = Math.min(n2000, Math.ceil(needScore / 400)); needScore -= res.n2000 * 400; }
+            }
+
+            // 500pt (100点)
+            if (isNaiseiFirst) {
+              if (needScore > 0 && n500 > 0) { res.n500 = Math.min(n500, Math.ceil(needScore / 100)); needScore -= res.n500 * 100; }
+              if (needScore > 0 && g500 > 0) { res.g500 = Math.min(g500, Math.ceil(needScore / 100)); needScore -= res.g500 * 100; }
+            } else {
+              if (needScore > 0 && g500 > 0) { res.g500 = Math.min(g500, Math.ceil(needScore / 100)); needScore -= res.g500 * 100; }
+              if (needScore > 0 && n500 > 0) { res.n500 = Math.min(n500, Math.ceil(needScore / 100)); needScore -= res.n500 * 100; }
+            }
+
+            return res;
+          };
+
+          const planNaisei = calcPlan(true);  // 内政優先
+          const planGunji = calcPlan(false);  // 軍事優先
+
+          // 表示用のHTML生成関数
+          const renderPlanHTML = (planTitle, plan) => {
+            const hasNaisei = (plan.n10000 > 0 || plan.n2000 > 0 || plan.n500 > 0);
+            const hasGunji = (plan.g10000 > 0 || plan.g2000 > 0 || plan.g500 > 0);
+
+            let html = `<div class="pattern-box">`;
+            html += `<div class="pattern-title">${planTitle}</div>`;
+
+            if (hasNaisei) {
+              html += `<div class="sub-title">【内政】</div>`;
+              if (plan.n10000 > 0) html += `・10000pt ✕ ${plan.n10000} 個<br>`;
+              if (plan.n2000 > 0) html += `・2000pt ✕ ${plan.n2000} 個<br>`;
+              if (plan.n500 > 0) html += `・500pt ✕ ${plan.n500} 個<br>`;
+            }
+
+            if (hasGunji) {
+              html += `<div class="sub-title">【軍事】</div>`;
+              if (plan.g10000 > 0) html += `・10000pt ✕ ${plan.g10000} 個<br>`;
+              if (plan.g2000 > 0) html += `・2000pt ✕ ${plan.g2000} 個<br>`;
+              if (plan.g500 > 0) html += `・500pt ✕ ${plan.g500} 個<br>`;
+            }
+
+            html += `</div>`;
+            return html;
+          };
+
           msg += `<div class="advice">`;
-
-          if (hasNaisei) {
-            msg += `<div class="sub-title">【内政】</div>`;
-            if (useN10000 > 0) msg += `・10000pt ✕ ${useN10000} 個<br>`;
-            if (useN2000 > 0) msg += `・2000pt ✕ ${useN2000} 個<br>`;
-            if (useN500 > 0) msg += `・500pt ✕ ${useN500} 個<br>`;
-          }
-
-          if (hasGunji) {
-            msg += `<div class="sub-title">【軍事】</div>`;
-            if (useG10000 > 0) msg += `・10000pt ✕ ${useG10000} 個<br>`;
-            if (useG2000 > 0) msg += `・2000pt ✕ ${useG2000} 個<br>`;
-            if (useG500 > 0) msg += `・500pt ✕ ${useG500} 個<br>`;
-          }
-
+          msg += renderPlanHTML("🟢 内政優先パターン", planNaisei);
+          msg += renderPlanHTML("🔴 軍事優先パターン", planGunji);
           msg += `<br>省エネ達成派はこんな感じにするとちょーどいい感じ！<br>ランキングを目指すなら全ツッパだ！</div>`;
         }
 
