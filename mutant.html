@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>獅子奮迅 ミュータント</title>
   <style>
-    body { font-family: sans-serif; max-width: 450px; margin: 20px auto; padding: 15px; display: none; font-size: 18px; }
+    body { font-family: sans-serif; max-width: 450px; margin: 20px auto; padding: 15px; font-size: 18px; }
     h2 { font-size: 1.4em; }
     .section-title { font-weight: bold; font-size: 1.25em; margin-top: 20px; margin-bottom: 12px; padding-bottom: 6px; }
     .title-naisei { color: #28a745; border-bottom: 3px solid #28a745; }
@@ -63,20 +63,6 @@
   <div id="result"></div>
 
   <script>
-    // パスワード設定（「44」）
-    const PASSWORD = "44";
-
-    window.onload = function() {
-      const userInput = prompt("パスワードを入力してください:");
-      if (userInput === PASSWORD) {
-        document.body.style.display = "block";
-      } else {
-        alert("パスワードが違います。");
-        document.body.innerHTML = "<h3>アクセス権限がありません</h3>";
-        document.body.style.display = "block";
-      }
-    };
-
     function calculate() {
       const getValue = (id) => {
         const val = document.getElementById(id).value;
@@ -170,7 +156,7 @@
           msg += `<div class="advice">`;
           msg += renderPlanHTML("🟢 内政優先パターン", planNaisei);
           msg += renderPlanHTML("🔴 軍事優先パターン", planGunji);
-          msg += `<br>省エネ達成派はこんな感じにするとちょーどいい感じ！<br>ランキングを目指すなら全ツッパだ！</div>`;
+          msg += `<br>省エネ達成派はこんな感じにするとちよーどいい感じ！<br>ランキングを目指すなら全ツッパだ！</div>`;
         }
 
         resultDiv.className = 'pass';
